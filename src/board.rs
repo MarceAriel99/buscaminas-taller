@@ -16,9 +16,9 @@ impl Board {
             let mut gridline: Vec<Cell> = Vec::new();
             for character in line.as_bytes(){
                 if *character != 46 && *character != 42 {
-                    return Err("Caracter incorrecto en el archivo".to_string());
+                    return Err("Wrong character in file. Expected only '*' or '.'".to_string());
                 }
-                //Add bomb if bomb, add empty if empty
+                //Add Cell to grid according to character
                 let element = match character {
                     46 => Cell::Empty(0),
                     42 => Cell::Bomb,

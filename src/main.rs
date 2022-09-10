@@ -10,15 +10,14 @@ fn read_file(path: &str) -> String {
 }
 
 fn main() {
-
-    // Leo el archivo y lo transformo a un String
+    // Reads file and returns string
     let board_str = read_file("board.txt");
-    // Creo un nuevo tablero a partir del archivo leido
+    // Create new board using string
     let mut board = Board::new(board_str).expect("Error");
-    // Imprimo el tablero original
+    // Display original board
     println!("{}", board);
-    // Calculo las bombas adyacentes a cada espacio vacío
+    // Calculate adjacent bombs to each empty space
     board.count_bombs();
-    // Imprimo el tablero
+    // Display updated board
     println!("{}", board);
 }
