@@ -16,8 +16,8 @@ fn main() {
     let mut board = Board::new(board_str).expect("Error");
     // Display original board
     println!("{}", board);
-    // Calculate adjacent bombs to each empty space
-    board.count_bombs();
+    // Calculate adjacent mines to each empty space
+    board.count_mines();
     // Display updated board
     println!("{}", board);
 }

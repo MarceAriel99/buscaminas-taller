@@ -21,7 +21,7 @@ impl Board {
                 //Add Cell to grid according to character
                 let element = match character {
                     46 => Cell::Empty(0),
-                    42 => Cell::Bomb,
+                    42 => Cell::Mine,
                     _ => unreachable!(), // Already accounted for and returned Error
                 };
                 gridline.push(element);
@@ -31,7 +31,7 @@ impl Board {
         Ok(Self{grid})
     }
 
-    pub fn count_bombs(&mut self) {
+    pub fn count_mines(&mut self) {
 
         let mut new_grid: Vec<Vec<Cell>> = Vec::new();
 
@@ -39,8 +39,8 @@ impl Board {
             let mut new_gridline: Vec<Cell> = Vec::new();
             for (x, cell) in row.iter().enumerate() {
                 let new_cell = match cell {
-                    Cell::Bomb => Cell::Bomb,
-                    Cell::Empty(_) => Cell::Empty(self.calculate_near_bombs(x, y)),
+                    Cell::Mine => Cell::Mine,
+                    Cell::Empty(_) => Cell::Empty(self.calculate_near_mines(x, y)),
                 };
                 new_gridline.push(new_cell);
             }
@@ -49,7 +49,7 @@ impl Board {
         self.grid = new_grid;
     }
 
-    fn calculate_near_bombs(&self, x: usize, y: usize) -> u8 {
+    fn calculate_near_mines(&self, x: usize, y: usize) -> u8 {
 
         let mut count: u8 = 0;
 
@@ -63,7 +63,7 @@ impl Board {
                     if let Some(cell) = row.get(x + offset_x - 1) {
                         // There is a valid cell
                         match cell {
-                            Cell::Bomb => count += 1,
+                            Cell::Mine => count += 1,
                             Cell::Empty(_) => (),
                         }
                     }
@@ -79,7 +79,7 @@ impl fmt::Display for Board {
         for row in &self.grid {
             for cell in row {
                 let character = match cell {
-                    Cell::Bomb => "*".to_string(),
+                    Cell::Mine => "*".to_string(),
                     Cell::Empty(0) => ".".to_string(),
                     Cell::Empty(num) => num.to_string(),
                 };

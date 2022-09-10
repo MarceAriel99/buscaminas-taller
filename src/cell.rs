@@ -1,4 +1,4 @@
 pub enum Cell {
-    Bomb,
+    Mine,
     Empty(u8),
 }
