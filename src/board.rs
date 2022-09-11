@@ -1,5 +1,5 @@
 use crate::cell::Cell;
-use std::{fmt,str};
+use std::{fmt, str};
 
 pub struct Board {
     grid: Vec<Vec<Cell>>,
@@ -7,15 +7,15 @@ pub struct Board {
 
 impl Board {
     /// Constructs a new `Board`.
-    /// 
+    ///
     /// # Arguments
     ///
     /// * `board_str` - A String representing the board
-    /// 
+    ///
     /// # Errors
-    /// 
+    ///
     /// - Error::String When all lines don't have the same length or unexpected characters are found.
-    /// 
+    ///
     /// # Examples
     /// ```
     /// use buscaminas::board::Board;
@@ -24,21 +24,27 @@ impl Board {
     /// let board = Board::new(board_str).unwrap();
     /// ```
     pub fn new(board_str: String) -> Result<Self, String> {
-
         let lines: Vec<&str> = board_str.split('\n').collect();
         let mut grid: Vec<Vec<Cell>> = Vec::new();
 
         let line_length = lines[0].len();
 
-        for line in lines{
-            if line.is_empty() {continue}
-            if line.len() != line_length{return Err("All lines must have the same length".to_string())}
+        for line in lines {
+            if line.is_empty() {
+                continue;
+            }
+            if line.len() != line_length {
+                return Err("All lines must have the same length".to_string());
+            }
 
             let mut gridline: Vec<Cell> = Vec::new();
 
-            for character in line.as_bytes(){
+            for character in line.as_bytes() {
                 if *character != 46 && *character != 42 {
-                    return Err("Wrong character in file. Only '*' or '.' characters are expected".to_string());
+                    return Err(
+                        "Wrong character in file. Only '*' or '.' characters are expected"
+                            .to_string(),
+                    );
                 }
                 //Add Cell to grid according to character
                 let element = match character {
@@ -50,26 +56,25 @@ impl Board {
             }
             grid.push(gridline);
         }
-        Ok(Self{grid})
+        Ok(Self { grid })
     }
 
-    /// Calculates adjacent mines for each empty space (in place). 
-    /// 
+    /// Calculates adjacent mines for each empty space (in place).
+    ///
     /// # Arguments
     ///
     /// * `self` - A mutable reference to itself.
-    /// 
+    ///
     /// # Examples
     /// ```
     /// use buscaminas::board::Board;
     ///
     /// let board_str = "*.\n.*\n".to_string();
     /// let mut board = Board::new(board_str).unwrap();
-    /// 
+    ///
     /// board.count_mines();
     /// ```
     pub fn count_mines(&mut self) {
-
         let mut new_grid: Vec<Vec<Cell>> = Vec::new();
 
         for (y, row) in self.grid.iter().enumerate() {
@@ -87,20 +92,20 @@ impl Board {
     }
 
     /// Returns a vector with strings representing the board
-    /// 
+    ///
     /// # Arguments
     ///
     /// * `self` - A mutable reference to itself.
-    /// 
+    ///
     /// # Examples
     /// ```
     /// use buscaminas::board::Board;
     ///
     /// let board_str = "*.\n.*\n".to_string();
     /// let mut board = Board::new(board_str).unwrap();
-    /// 
+    ///
     /// board.count_mines();
-    /// 
+    ///
     /// let vector_repr = board.to_vec();
     /// ```
     pub fn to_vec(&self) -> Vec<String> {
@@ -119,13 +124,14 @@ impl Board {
     }
 
     fn calculate_near_mines(&self, x: usize, y: usize) -> u8 {
-
         let mut count: u8 = 0;
 
         for offset_x in 0..3 {
             for offset_y in 0..3 {
                 // If coordinate will be negative, continue. As usize can't be negative.
-                if x == 0 && offset_x == 0 || y == 0 && offset_y == 0 {continue;}
+                if x == 0 && offset_x == 0 || y == 0 && offset_y == 0 {
+                    continue;
+                }
 
                 if let Some(row) = self.grid.get(y + offset_y - 1) {
                     // There is a valid row
@@ -161,7 +167,7 @@ impl fmt::Display for Board {
 }
 
 #[cfg(test)]
-mod tests{
+mod tests {
     use super::Board;
 
     #[test]
@@ -190,5 +196,4 @@ mod tests{
         let board = Board::new(board_str).unwrap();
         assert_eq!(board.calculate_near_mines(1, 2), 5);
     }
-
 }
