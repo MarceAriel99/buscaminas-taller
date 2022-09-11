@@ -1,6 +1,5 @@
 use buscaminas::board::Board;
 
-// Add more tests (like board full of empty and board full of mines)
 #[test]
 fn board_initial_state() {
     let board_str = ".*.*.\n..*..\n..*..\n.....".to_string();
@@ -23,6 +22,48 @@ fn board_counted_mines() {
     let expected_board = vec![
         "1", "*", "3", "*", "1", "1", "3", "*", "3", "1", ".", "2", "*", "2", ".", ".", "1", "1",
         "1", ".",
+    ];
+
+    assert_eq!(board.to_vec(), expected_board);
+}
+
+#[test]
+fn board_full_of_mines() {
+    let board_str = "*****\n*****\n*****\n*****".to_string();
+    let mut board = Board::new(board_str).unwrap();
+    board.count_mines();
+
+    let expected_board = vec![
+        "*", "*", "*", "*", "*", "*", "*", "*", "*", "*", "*", "*", "*", "*", "*", "*", "*", "*",
+        "*", "*",
+    ];
+
+    assert_eq!(board.to_vec(), expected_board);
+}
+
+#[test]
+fn board_empty() {
+    let board_str = ".....\n.....\n.....\n.....".to_string();
+    let mut board = Board::new(board_str).unwrap();
+    board.count_mines();
+
+    let expected_board = vec![
+        ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".",
+        ".", ".",
+    ];
+
+    assert_eq!(board.to_vec(), expected_board);
+}
+
+#[test]
+fn board_mine_on_center() {
+    let board_str = ".....\n.....\n..*..\n.....\n.....".to_string();
+    let mut board = Board::new(board_str).unwrap();
+    board.count_mines();
+
+    let expected_board = vec![
+        ".", ".", ".", ".", ".", ".", "1", "1", "1", ".", ".", "1", "*", "1", ".", ".", "1", "1",
+        "1", ".", ".", ".", ".", ".", ".",
     ];
 
     assert_eq!(board.to_vec(), expected_board);

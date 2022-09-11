@@ -1,11 +1,17 @@
 use buscaminas::board::Board;
-use std::fs;
+use std::{fs, env};
 
 fn main() {
-    let path = "board.txt";
+    // Reads command line argument
+    let path: String = match env::args().nth(1) {
+        Some(res) => res, 
+        None => {println!("Error, you must provide a path");
+            return;
+        }, 
+    };
 
     // Reads file and returns string
-    let board_str = match fs::read_to_string(path) {
+    let board_str = match fs::read_to_string(&path) {
         Ok(str) => str,
         Err(error) => {
             println!("Error reading file: {}: {}", error, path);

@@ -41,10 +41,7 @@ impl Board {
 
             for character in line.as_bytes() {
                 if *character != 46 && *character != 42 {
-                    return Err(
-                        "Wrong character in file. Only '*' or '.' characters are expected"
-                            .to_string(),
-                    );
+                    return Err("Wrong character in file. Only '*' or '.' characters are expected".to_string());
                 }
                 //Add Cell to grid according to character
                 let element = match character {
