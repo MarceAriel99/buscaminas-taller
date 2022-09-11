@@ -12,8 +12,14 @@ impl Board {
         let lines: Vec<&str> = board_str.split("\n").collect();
         let mut grid: Vec<Vec<Cell>> = Vec::new();
 
+        let line_length = lines[0].len();
+
         for line in lines{
+            if line.len() == 0 {continue}
+            if line.len() != line_length{return Err("All lines must have the same length".to_string())}
+
             let mut gridline: Vec<Cell> = Vec::new();
+
             for character in line.as_bytes(){
                 if *character != 46 && *character != 42 {
                     return Err("Wrong character in file. Expected only '*' or '.'".to_string());
@@ -72,6 +78,22 @@ impl Board {
         }
         return count;
     }
+
+    pub fn to_vec(&self) -> Vec<String> {
+        let mut vect: Vec<String> = vec![];
+        for row in &self.grid {
+            for cell in row {
+                let character = match cell {
+                    Cell::Mine => "*".to_string(),
+                    Cell::Empty(0) => ".".to_string(),
+                    Cell::Empty(num) => num.to_string(),
+                };
+                vect.push(character);
+            }
+        }
+        vect
+    }
+
 }
 
 impl fmt::Display for Board {
@@ -89,4 +111,37 @@ impl fmt::Display for Board {
         }
         Ok(())
     }
+}
+
+#[cfg(test)]
+mod tests{
+    use super::Board;
+
+    #[test]
+    fn create_board() {
+        let board_str = "*..*\n.**.\n*.*.\n.*.*".to_string();
+        let _board = Board::new(board_str).unwrap();
+    }
+
+    #[test]
+    #[should_panic]
+    fn fail_to_create_board_wrong_characters() {
+        let board_str = "not\nthe\ncorrect\nformat".to_string();
+        let _board = Board::new(board_str).unwrap();
+    }
+
+    #[test]
+    #[should_panic]
+    fn fail_to_create_board_different_line_lengths() {
+        let board_str = "*..*..\n.**.*\n*.*.\n.*.**.".to_string();
+        let _board = Board::new(board_str).unwrap();
+    }
+
+    #[test]
+    fn count_adjacent_mines_to_cell() {
+        let board_str = "*..*\n.**.\n*.*.\n.*.*".to_string();
+        let board = Board::new(board_str).unwrap();
+        assert_eq!(board.calculate_near_mines(1, 2), 5);
+    }
+
 }
