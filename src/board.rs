@@ -9,13 +9,13 @@ impl Board {
 
     pub fn new(board_str: String) -> Result<Self, String> {
 
-        let lines: Vec<&str> = board_str.split("\n").collect();
+        let lines: Vec<&str> = board_str.split('\n').collect();
         let mut grid: Vec<Vec<Cell>> = Vec::new();
 
         let line_length = lines[0].len();
 
         for line in lines{
-            if line.len() == 0 {continue}
+            if line.is_empty() {continue}
             if line.len() != line_length{return Err("All lines must have the same length".to_string())}
 
             let mut gridline: Vec<Cell> = Vec::new();
@@ -76,7 +76,7 @@ impl Board {
                 }
             }
         }
-        return count;
+        count
     }
 
     pub fn to_vec(&self) -> Vec<String> {
