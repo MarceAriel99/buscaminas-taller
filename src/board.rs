@@ -1,12 +1,28 @@
 use crate::cell::Cell;
-use std::fmt;
+use std::{fmt,str};
 
 pub struct Board {
     grid: Vec<Vec<Cell>>,
 }
 
 impl Board {
-
+    /// Constructs a new `Board`.
+    /// 
+    /// # Arguments
+    ///
+    /// * `board_str` - A String representing the board
+    /// 
+    /// # Errors
+    /// 
+    /// - Error::String When all lines don't have the same length or unexpected characters are found.
+    /// 
+    /// # Examples
+    /// ```
+    /// use buscaminas::board::Board;
+    ///
+    /// let board_str = "*.\n.*\n".to_string();
+    /// let board = Board::new(board_str).unwrap();
+    /// ```
     pub fn new(board_str: String) -> Result<Self, String> {
 
         let lines: Vec<&str> = board_str.split('\n').collect();
@@ -22,7 +38,7 @@ impl Board {
 
             for character in line.as_bytes(){
                 if *character != 46 && *character != 42 {
-                    return Err("Wrong character in file. Expected only '*' or '.'".to_string());
+                    return Err("Wrong character in file. Only '*' or '.' characters are expected".to_string());
                 }
                 //Add Cell to grid according to character
                 let element = match character {
@@ -37,6 +53,21 @@ impl Board {
         Ok(Self{grid})
     }
 
+    /// Calculates adjacent mines for each empty space (in place). 
+    /// 
+    /// # Arguments
+    ///
+    /// * `self` - A mutable reference to itself.
+    /// 
+    /// # Examples
+    /// ```
+    /// use buscaminas::board::Board;
+    ///
+    /// let board_str = "*.\n.*\n".to_string();
+    /// let mut board = Board::new(board_str).unwrap();
+    /// 
+    /// board.count_mines();
+    /// ```
     pub fn count_mines(&mut self) {
 
         let mut new_grid: Vec<Vec<Cell>> = Vec::new();
@@ -53,6 +84,38 @@ impl Board {
             new_grid.push(new_gridline);
         }
         self.grid = new_grid;
+    }
+
+    /// Returns a vector with strings representing the board
+    /// 
+    /// # Arguments
+    ///
+    /// * `self` - A mutable reference to itself.
+    /// 
+    /// # Examples
+    /// ```
+    /// use buscaminas::board::Board;
+    ///
+    /// let board_str = "*.\n.*\n".to_string();
+    /// let mut board = Board::new(board_str).unwrap();
+    /// 
+    /// board.count_mines();
+    /// 
+    /// let vector_repr = board.to_vec();
+    /// ```
+    pub fn to_vec(&self) -> Vec<String> {
+        let mut vect: Vec<String> = vec![];
+        for row in &self.grid {
+            for cell in row {
+                let character = match cell {
+                    Cell::Mine => "*".to_string(),
+                    Cell::Empty(0) => ".".to_string(),
+                    Cell::Empty(num) => num.to_string(),
+                };
+                vect.push(character);
+            }
+        }
+        vect
     }
 
     fn calculate_near_mines(&self, x: usize, y: usize) -> u8 {
@@ -78,22 +141,6 @@ impl Board {
         }
         count
     }
-
-    pub fn to_vec(&self) -> Vec<String> {
-        let mut vect: Vec<String> = vec![];
-        for row in &self.grid {
-            for cell in row {
-                let character = match cell {
-                    Cell::Mine => "*".to_string(),
-                    Cell::Empty(0) => ".".to_string(),
-                    Cell::Empty(num) => num.to_string(),
-                };
-                vect.push(character);
-            }
-        }
-        vect
-    }
-
 }
 
 impl fmt::Display for Board {

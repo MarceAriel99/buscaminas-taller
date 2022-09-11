@@ -1,16 +1,12 @@
 use buscaminas::board::Board;
-use std::{fs, io};
-
-pub fn read_file(path: &str) -> Result<String, io::Error> {
-    fs::read_to_string(path)
-}
+use std::{fs};
 
 fn main() {
     
     let path = "board.txt";
 
     // Reads file and returns string
-    let board_str = match read_file(path) {
+    let board_str = match fs::read_to_string(path) {
         Ok(str) => str,
         Err(error) => {println!("Error reading file: {}: {}", error, path); return},
     };

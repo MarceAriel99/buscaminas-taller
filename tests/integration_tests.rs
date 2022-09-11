@@ -1,5 +1,6 @@
 use buscaminas::board::Board;
 
+// Add more tests (like board full of empty and board full of mines)
 #[test]
 fn board_initial_state() {
     let board_str = ".*.*.\n..*..\n..*..\n.....".to_string();
